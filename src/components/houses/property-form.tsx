@@ -115,6 +115,8 @@ function TextField({
   inputMode,
   placeholder,
   className,
+  min,
+  max,
 }: {
   name: FieldName;
   label: string;
@@ -125,6 +127,8 @@ function TextField({
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
   placeholder?: string;
   className?: string;
+  min?: number;
+  max?: number;
 }) {
   const hasError = Boolean(state.fieldErrors?.[name]?.length);
 
@@ -141,6 +145,8 @@ function TextField({
         inputMode={inputMode}
         defaultValue={defaultValue ?? ""}
         placeholder={placeholder}
+        min={min}
+        max={max}
         required={required}
         aria-invalid={hasError}
         aria-describedby={hasError ? `${name}-error` : undefined}
@@ -528,6 +534,66 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
           label="Notes"
           defaultValue={property?.notes}
           state={state}
+        />
+      </FormSection>
+
+      <FormSection
+        title="Ratings"
+        description="Optional individual 1–10 ratings. No combined score is calculated."
+      >
+        <TextField
+          name="locationRating"
+          label="Location"
+          defaultValue={property?.locationRating}
+          state={state}
+          type="number"
+          min={1}
+          max={10}
+        />
+        <TextField
+          name="layoutRating"
+          label="Layout"
+          defaultValue={property?.layoutRating}
+          state={state}
+          type="number"
+          min={1}
+          max={10}
+        />
+        <TextField
+          name="conditionRating"
+          label="Condition"
+          defaultValue={property?.conditionRating}
+          state={state}
+          type="number"
+          min={1}
+          max={10}
+        />
+        <TextField
+          name="gardenRating"
+          label="Garden"
+          defaultValue={property?.gardenRating}
+          state={state}
+          type="number"
+          min={1}
+          max={10}
+        />
+        <TextField
+          name="privacyRating"
+          label="Privacy"
+          defaultValue={property?.privacyRating}
+          state={state}
+          type="number"
+          min={1}
+          max={10}
+        />
+        <TextField
+          name="valueRating"
+          label="Value"
+          defaultValue={property?.valueRating}
+          state={state}
+          type="number"
+          min={1}
+          max={10}
         />
       </FormSection>
 

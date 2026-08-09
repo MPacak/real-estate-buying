@@ -168,6 +168,13 @@ export const createPropertySchema = z
     notes: optionalText(20_000),
     rejectionReason: optionalText(10_000),
 
+    locationRating: optionalInteger({ minimum: 1, maximum: 10 }),
+    layoutRating: optionalInteger({ minimum: 1, maximum: 10 }),
+    conditionRating: optionalInteger({ minimum: 1, maximum: 10 }),
+    gardenRating: optionalInteger({ minimum: 1, maximum: 10 }),
+    privacyRating: optionalInteger({ minimum: 1, maximum: 10 }),
+    valueRating: optionalInteger({ minimum: 1, maximum: 10 }),
+
     propertyTaxPercent: optionalDecimal({
       integerDigits: 3,
       scale: 4,

@@ -80,6 +80,13 @@ export const properties = pgTable(
     notes: text("notes"),
     rejectionReason: text("rejection_reason"),
 
+    locationRating: integer("location_rating"),
+    layoutRating: integer("layout_rating"),
+    conditionRating: integer("condition_rating"),
+    gardenRating: integer("garden_rating"),
+    privacyRating: integer("privacy_rating"),
+    valueRating: integer("value_rating"),
+
     propertyTaxPercent: numeric("property_tax_percent", {
       precision: 7,
       scale: 4,
@@ -161,6 +168,30 @@ export const properties = pgTable(
     check(
       "properties_furnishing_cost_nonnegative",
       sql`${table.furnishingCost} >= 0`,
+    ),
+    check(
+      "properties_location_rating_range",
+      sql`${table.locationRating} BETWEEN 1 AND 10`,
+    ),
+    check(
+      "properties_layout_rating_range",
+      sql`${table.layoutRating} BETWEEN 1 AND 10`,
+    ),
+    check(
+      "properties_condition_rating_range",
+      sql`${table.conditionRating} BETWEEN 1 AND 10`,
+    ),
+    check(
+      "properties_garden_rating_range",
+      sql`${table.gardenRating} BETWEEN 1 AND 10`,
+    ),
+    check(
+      "properties_privacy_rating_range",
+      sql`${table.privacyRating} BETWEEN 1 AND 10`,
+    ),
+    check(
+      "properties_value_rating_range",
+      sql`${table.valueRating} BETWEEN 1 AND 10`,
     ),
   ],
 );

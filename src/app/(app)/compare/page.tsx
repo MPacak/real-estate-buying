@@ -226,6 +226,46 @@ export default async function ComparePage({
               values={properties.map((property) => property.agentName)}
             />
             <ComparisonRow
+              label="Location rating"
+              values={properties.map((property) =>
+                property.locationRating
+                  ? `${property.locationRating}/10`
+                  : null,
+              )}
+            />
+            <ComparisonRow
+              label="Layout rating"
+              values={properties.map((property) =>
+                property.layoutRating ? `${property.layoutRating}/10` : null,
+              )}
+            />
+            <ComparisonRow
+              label="Condition rating"
+              values={properties.map((property) =>
+                property.conditionRating
+                  ? `${property.conditionRating}/10`
+                  : null,
+              )}
+            />
+            <ComparisonRow
+              label="Garden rating"
+              values={properties.map((property) =>
+                property.gardenRating ? `${property.gardenRating}/10` : null,
+              )}
+            />
+            <ComparisonRow
+              label="Privacy rating"
+              values={properties.map((property) =>
+                property.privacyRating ? `${property.privacyRating}/10` : null,
+              )}
+            />
+            <ComparisonRow
+              label="Value rating"
+              values={properties.map((property) =>
+                property.valueRating ? `${property.valueRating}/10` : null,
+              )}
+            />
+            <ComparisonRow
               label="Pros"
               values={properties.map((property) => property.pros)}
             />

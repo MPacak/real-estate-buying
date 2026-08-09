@@ -129,6 +129,14 @@ export default async function PropertyDetailsPage({
       property.additionalCosts ||
       property.furnishingCost,
   );
+  const hasRatings = Boolean(
+    property.locationRating ||
+      property.layoutRating ||
+      property.conditionRating ||
+      property.gardenRating ||
+      property.privacyRating ||
+      property.valueRating,
+  );
 
   return (
     <div className="mx-auto max-w-4xl space-y-5">
@@ -311,6 +319,49 @@ export default async function PropertyDetailsPage({
         <DetailsCard title="Pros & Cons">
           <DetailItem label="Pros" value={property.pros} />
           <DetailItem label="Cons" value={property.cons} />
+        </DetailsCard>
+      ) : null}
+
+      {hasRatings ? (
+        <DetailsCard title="Ratings">
+          <DetailItem
+            label="Location"
+            value={
+              property.locationRating
+                ? `${property.locationRating}/10`
+                : null
+            }
+          />
+          <DetailItem
+            label="Layout"
+            value={
+              property.layoutRating ? `${property.layoutRating}/10` : null
+            }
+          />
+          <DetailItem
+            label="Condition"
+            value={
+              property.conditionRating
+                ? `${property.conditionRating}/10`
+                : null
+            }
+          />
+          <DetailItem
+            label="Garden"
+            value={
+              property.gardenRating ? `${property.gardenRating}/10` : null
+            }
+          />
+          <DetailItem
+            label="Privacy"
+            value={
+              property.privacyRating ? `${property.privacyRating}/10` : null
+            }
+          />
+          <DetailItem
+            label="Value"
+            value={property.valueRating ? `${property.valueRating}/10` : null}
+          />
         </DetailsCard>
       ) : null}
 
