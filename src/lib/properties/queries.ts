@@ -41,7 +41,7 @@ export async function getProperties(filters: PropertyFilters) {
     conditions.push(eq(properties.status, "REJECTED"));
   } else if (filters.status) {
     conditions.push(eq(properties.status, filters.status));
-  } else {
+  } else if (!filters.q) {
     conditions.push(inArray(properties.status, ACTIVE_PROPERTY_STATUSES));
   }
 

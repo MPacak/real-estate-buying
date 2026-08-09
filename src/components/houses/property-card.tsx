@@ -117,6 +117,15 @@ export function PropertyCard({ property }: { property: Property }) {
             </div>
           </div>
         ) : null}
+
+        {property.status === "REJECTED" && property.rejectionReason ? (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-900">
+            <p className="font-medium">Why it was rejected</p>
+            <p className="mt-1 line-clamp-3 whitespace-pre-line">
+              {property.rejectionReason}
+            </p>
+          </div>
+        ) : null}
       </div>
 
       <div className="flex gap-2 border-t bg-muted/20 p-3">

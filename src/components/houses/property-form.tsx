@@ -214,6 +214,9 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
     additionalCosts: property?.additionalCosts,
     furnishingCost: property?.furnishingCost,
   });
+  const [selectedStatus, setSelectedStatus] = useState<Property["status"]>(
+    property?.status ?? "NEW",
+  );
   const isEditing = Boolean(property);
 
   return (
@@ -390,6 +393,9 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
             id="status"
             name="status"
             defaultValue={property?.status ?? "NEW"}
+            onChange={(event) => {
+              setSelectedStatus(event.target.value as Property["status"]);
+            }}
           >
             {PROPERTY_STATUSES.map((status) => (
               <option key={status} value={status}>
@@ -420,6 +426,11 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
           defaultValue={property?.rejectionReason}
           state={state}
           placeholder="Why should this property not be reconsidered?"
+          className={
+            selectedStatus === "REJECTED"
+              ? "space-y-2 sm:col-span-2"
+              : "hidden"
+          }
         />
       </FormSection>
 
