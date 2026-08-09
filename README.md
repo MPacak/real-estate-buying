@@ -13,7 +13,9 @@ manageable. Exact decimal financial calculations provide acquisition-cost
 estimates and price-per-square-metre values without persisting derived data.
 Two to four dashboard properties can be selected for a horizontally scrollable
 side-by-side comparison. Optional 1–10 ratings keep location, layout, condition,
-garden, privacy, and value assessments separate and transparent.
+garden, privacy, and value assessments separate and transparent. The MVP
+includes responsive loading and empty states, accessible feedback, archive
+confirmation, and unsaved-form protection.
 
 ## Requirements
 

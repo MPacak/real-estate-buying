@@ -169,7 +169,7 @@ export async function createProperty(
   }
 
   revalidatePath("/houses");
-  redirect(`/houses/${propertyId}`);
+  redirect(`/houses/${propertyId}?saved=created`);
 }
 
 export async function updateProperty(
@@ -229,7 +229,7 @@ export async function updateProperty(
 
   revalidatePath("/houses");
   revalidatePath(`/houses/${idValidation.data}`);
-  redirect(`/houses/${idValidation.data}`);
+  redirect(`/houses/${idValidation.data}?saved=updated`);
 }
 
 export async function archiveProperty(id: string): Promise<void> {
@@ -247,5 +247,5 @@ export async function archiveProperty(id: string): Promise<void> {
 
   revalidatePath("/houses");
   revalidatePath(`/houses/${propertyId}`);
-  redirect("/houses");
+  redirect("/houses?saved=archived");
 }

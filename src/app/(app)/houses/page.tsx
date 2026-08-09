@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PropertyDashboardGrid } from "@/components/houses/property-dashboard-grid";
 import { PropertyFilters } from "@/components/houses/property-filters";
 import { buttonVariants } from "@/components/ui/button";
+import { ToastMessage } from "@/components/ui/toast-message";
 import { getProperties } from "@/lib/properties/queries";
 import {
   parsePropertyFilters,
@@ -16,8 +17,12 @@ type HousesPageProps = {
 };
 
 export default async function HousesPage({ searchParams }: HousesPageProps) {
-  const filters = parsePropertyFilters(await searchParams);
+  const rawSearchParams = await searchParams;
+  const filters = parsePropertyFilters(rawSearchParams);
   const matchingProperties = await getProperties(filters);
+  const saved = Array.isArray(rawSearchParams.saved)
+    ? rawSearchParams.saved[0]
+    : rawSearchParams.saved;
   const hasFilters = Boolean(
     filters.q ||
       filters.quick ||
@@ -35,6 +40,10 @@ export default async function HousesPage({ searchParams }: HousesPageProps) {
 
   return (
     <div className="space-y-6">
+      {saved === "archived" ? (
+        <ToastMessage message="Property archived." />
+      ) : null}
+
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Houses</h1>

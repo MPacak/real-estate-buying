@@ -2,7 +2,7 @@
 
 import { formatInTimeZone } from "date-fns-tz";
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { FinancialSummary } from "@/components/houses/financial-summary";
@@ -228,13 +228,27 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
   const [selectedStatus, setSelectedStatus] = useState<Property["status"]>(
     property?.status ?? "NEW",
   );
+  const [isDirty, setIsDirty] = useState(false);
   const isEditing = Boolean(property);
+
+  useEffect(() => {
+    if (!isDirty) return;
+
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = true;
+    };
+
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    return () => window.removeEventListener("beforeunload", warnBeforeUnload);
+  }, [isDirty]);
 
   return (
     <form
       action={formAction}
       className="space-y-5"
       onInput={(event) => {
+        setIsDirty(true);
         const data = new FormData(event.currentTarget);
         const value = (name: string) => String(data.get(name) ?? "");
 
@@ -644,6 +658,14 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
         <Link
           className="inline-flex min-h-11 items-center px-3 text-sm font-medium text-muted-foreground hover:text-foreground"
           href={property ? `/houses/${property.id}` : "/houses"}
+          onClick={(event) => {
+            if (
+              isDirty &&
+              !window.confirm("Discard your unsaved property changes?")
+            ) {
+              event.preventDefault();
+            }
+          }}
         >
           Cancel
         </Link>

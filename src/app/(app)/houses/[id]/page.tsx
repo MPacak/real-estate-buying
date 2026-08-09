@@ -24,6 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ToastMessage } from "@/components/ui/toast-message";
 import { db } from "@/db";
 import { properties } from "@/db/schema/properties";
 import { requireServerSession } from "@/lib/auth/session";
@@ -37,6 +38,7 @@ import { cn } from "@/lib/utils";
 
 type PropertyDetailsPageProps = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ saved?: string | string[] }>;
 };
 
 function DetailItem({
@@ -83,6 +85,7 @@ function DetailsCard({
 
 export default async function PropertyDetailsPage({
   params,
+  searchParams,
 }: PropertyDetailsPageProps) {
   await requireServerSession();
 
@@ -100,6 +103,8 @@ export default async function PropertyDetailsPage({
     notFound();
   }
 
+  const rawSaved = (await searchParams).saved;
+  const saved = Array.isArray(rawSaved) ? rawSaved[0] : rawSaved;
   const archiveAction = archiveProperty.bind(null, property.id);
   const phoneHref = property.agentPhone
     ? `tel:${property.agentPhone.replace(/[^\d+]/g, "")}`
@@ -140,6 +145,12 @@ export default async function PropertyDetailsPage({
 
   return (
     <div className="mx-auto max-w-4xl space-y-5">
+      {saved === "created" ? (
+        <ToastMessage message="Property created." />
+      ) : saved === "updated" ? (
+        <ToastMessage message="Changes saved." />
+      ) : null}
+
       <Link
         href="/houses"
         className="inline-flex min-h-10 items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"

@@ -104,6 +104,10 @@ export default async function ComparePage({
         </Link>
       </div>
 
+      <p className="text-xs text-muted-foreground sm:hidden">
+        Swipe horizontally to view every selected property.
+      </p>
+
       <div className="-mx-4 overflow-x-auto border-y sm:mx-0 sm:rounded-xl sm:border">
         <table className="min-w-full border-collapse bg-card">
           <thead>
