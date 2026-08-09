@@ -11,6 +11,7 @@ import { PropertyPriority } from "@/components/houses/property-priority";
 import { PropertyStatus } from "@/components/houses/property-status";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { calculatePropertyCosts } from "@/lib/calculations/property-costs";
 import { formatCurrency } from "@/lib/formatting/currency";
 import { formatArea, formatDateTime } from "@/lib/formatting/property";
 import type { Property } from "@/lib/properties/types";
@@ -24,6 +25,7 @@ export function PropertyCard({ property }: { property: Property }) {
     property.agencyName || property.agentName || property.agentPhone,
   );
   const hasViewing = Boolean(property.viewingAt);
+  const costs = calculatePropertyCosts(property);
 
   return (
     <Card className="overflow-hidden">
@@ -60,6 +62,11 @@ export function PropertyCard({ property }: { property: Property }) {
                 <p className="mt-1 font-semibold">
                   {formatCurrency(property.askingPrice)}
                 </p>
+                {costs.askingPricePerM2 ? (
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {formatCurrency(costs.askingPricePerM2)}/m²
+                  </p>
+                ) : null}
               </div>
             ) : null}
             {property.livingAreaM2 ? (

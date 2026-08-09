@@ -14,6 +14,7 @@ import { z } from "zod";
 
 import { archiveProperty } from "@/actions/properties";
 import { ArchivePropertyButton } from "@/components/houses/archive-property-button";
+import { FinancialSummary } from "@/components/houses/financial-summary";
 import { PropertyPriority } from "@/components/houses/property-priority";
 import { PropertyStatus } from "@/components/houses/property-status";
 import { buttonVariants } from "@/components/ui/button";
@@ -31,7 +32,6 @@ import {
   formatArea,
   formatBoolean,
   formatDateTime,
-  formatPercentage,
 } from "@/lib/formatting/property";
 import { cn } from "@/lib/utils";
 
@@ -315,36 +315,7 @@ export default async function PropertyDetailsPage({
       ) : null}
 
       {hasFinancials ? (
-        <DetailsCard title="Financials">
-          <DetailItem
-            label="Asking price"
-            value={formatCurrency(property.askingPrice)}
-          />
-          <DetailItem
-            label="Target offer"
-            value={formatCurrency(property.targetOfferPrice)}
-          />
-          <DetailItem
-            label="Property tax"
-            value={formatPercentage(property.propertyTaxPercent)}
-          />
-          <DetailItem
-            label="Agency fee"
-            value={formatPercentage(property.agencyFeePercent)}
-          />
-          <DetailItem
-            label="Solemnization"
-            value={formatCurrency(property.solemnizationCost)}
-          />
-          <DetailItem
-            label="Additional costs"
-            value={formatCurrency(property.additionalCosts)}
-          />
-          <DetailItem
-            label="Furnishing"
-            value={formatCurrency(property.furnishingCost)}
-          />
-        </DetailsCard>
+        <FinancialSummary inputs={property} />
       ) : null}
 
       {property.notes ? (

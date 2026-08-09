@@ -2,9 +2,10 @@
 
 import { formatInTimeZone } from "date-fns-tz";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
+import { FinancialSummary } from "@/components/houses/financial-summary";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,6 +27,7 @@ import {
   PROPERTY_STATUSES,
 } from "@/lib/properties/constants";
 import type { Property } from "@/lib/properties/types";
+import type { PropertyCostInputs } from "@/lib/calculations/property-costs";
 
 type PropertyFormProps = {
   action: (
@@ -202,10 +204,38 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
     action,
     INITIAL_PROPERTY_ACTION_STATE,
   );
+  const [financialInputs, setFinancialInputs] = useState<PropertyCostInputs>({
+    askingPrice: property?.askingPrice,
+    targetOfferPrice: property?.targetOfferPrice,
+    livingAreaM2: property?.livingAreaM2,
+    propertyTaxPercent: property?.propertyTaxPercent,
+    agencyFeePercent: property?.agencyFeePercent,
+    solemnizationCost: property?.solemnizationCost,
+    additionalCosts: property?.additionalCosts,
+    furnishingCost: property?.furnishingCost,
+  });
   const isEditing = Boolean(property);
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form
+      action={formAction}
+      className="space-y-5"
+      onInput={(event) => {
+        const data = new FormData(event.currentTarget);
+        const value = (name: string) => String(data.get(name) ?? "");
+
+        setFinancialInputs({
+          askingPrice: value("askingPrice"),
+          targetOfferPrice: value("targetOfferPrice"),
+          livingAreaM2: value("livingAreaM2"),
+          propertyTaxPercent: value("propertyTaxPercent"),
+          agencyFeePercent: value("agencyFeePercent"),
+          solemnizationCost: value("solemnizationCost"),
+          additionalCosts: value("additionalCosts"),
+          furnishingCost: value("furnishingCost"),
+        });
+      }}
+    >
       {state.message ? (
         <div
           className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
@@ -481,6 +511,8 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
           inputMode="decimal"
         />
       </FormSection>
+
+      <FinancialSummary inputs={financialInputs} preview />
 
       <div className="sticky bottom-16 z-20 flex items-center justify-end gap-3 rounded-xl border bg-background/95 p-3 shadow-lg backdrop-blur md:bottom-3">
         <Link
