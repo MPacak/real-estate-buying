@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
 import { z } from "zod";
 
-config({ path: ".env.local" });
+config({ path: ".env.local", override: true });
 config();
 
 const migrationEnvironment = z

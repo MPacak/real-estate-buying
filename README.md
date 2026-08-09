@@ -2,10 +2,11 @@
 
 Private, mobile-first application for tracking houses under consideration.
 
-Phase 1 contains the Next.js application foundation, Neon/Drizzle database
-configuration, Better Auth email/password login, protected routes, and the
-responsive authenticated shell. Property data is intentionally not implemented
-yet.
+The project currently contains the Next.js application foundation,
+Neon/Drizzle database configuration, Better Auth email/password login,
+protected routes, the responsive authenticated shell, and the initial Property
+database model. Property CRUD and dashboard functionality are implemented in
+later phases.
 
 ## Requirements
 

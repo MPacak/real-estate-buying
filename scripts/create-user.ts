@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import { z } from "zod";
 
-config({ path: ".env.local" });
+config({ path: ".env.local", override: true });
 config();
 
 function readArgument(name: string) {
