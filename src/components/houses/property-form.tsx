@@ -2,7 +2,7 @@
 
 import { formatInTimeZone } from "date-fns-tz";
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { FinancialSummary } from "@/components/houses/financial-summary";
@@ -233,6 +233,7 @@ function FurnishingField({
 }
 
 export function PropertyForm({ action, property }: PropertyFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction] = useActionState(
     action,
     INITIAL_PROPERTY_ACTION_STATE,
@@ -255,6 +256,26 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
   const isEditing = Boolean(property);
 
   useEffect(() => {
+    const form = formRef.current;
+
+    if (!form || !state.values) return;
+
+    for (const [name, value] of Object.entries(state.values)) {
+      const field = form.elements.namedItem(name);
+
+      if (
+        field instanceof HTMLInputElement ||
+        field instanceof HTMLSelectElement ||
+        field instanceof HTMLTextAreaElement
+      ) {
+        field.value = value;
+      }
+    }
+
+    form.dispatchEvent(new Event("input", { bubbles: true }));
+  }, [state.values]);
+
+  useEffect(() => {
     if (!isDirty) return;
 
     const warnBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -268,6 +289,7 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
 
   return (
     <form
+      ref={formRef}
       action={formAction}
       className="space-y-5"
       onInput={(event) => {

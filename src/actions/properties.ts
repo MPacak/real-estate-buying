@@ -61,17 +61,22 @@ const propertyFormFields = [
   "renovationCost",
 ] as const;
 
-function readPropertyForm(formData: FormData) {
-  const input: Record<string, FormDataEntryValue | Date> = {};
+function readPropertyFormValues(formData: FormData) {
+  const values: Record<string, string> = {};
 
   for (const field of propertyFormFields) {
     const value = formData.get(field);
 
-    if (value !== null) {
-      input[field] = value;
+    if (typeof value === "string") {
+      values[field] = value;
     }
   }
 
+  return values;
+}
+
+function parsePropertyForm(values: Record<string, string>) {
+  const input: Record<string, string | Date> = { ...values };
   const viewingAt = input.viewingAt;
 
   if (typeof viewingAt === "string" && viewingAt.trim() !== "") {
@@ -137,11 +142,15 @@ function toDatabaseValues(input: CreatePropertyInput) {
   } satisfies typeof properties.$inferInsert;
 }
 
-function validationErrorState(error: z.ZodError): PropertyActionState {
+function validationErrorState(
+  error: z.ZodError,
+  values: Record<string, string>,
+): PropertyActionState {
   return {
     message: "Check the highlighted fields and try again.",
     fieldErrors: error.flatten()
       .fieldErrors as PropertyActionState["fieldErrors"],
+    values,
   };
 }
 
@@ -151,12 +160,13 @@ export async function createProperty(
 ): Promise<PropertyActionState> {
   await requireServerSession();
 
+  const values = readPropertyFormValues(formData);
   const validation = createPropertySchema.safeParse(
-    readPropertyForm(formData),
+    parsePropertyForm(values),
   );
 
   if (!validation.success) {
-    return validationErrorState(validation.error);
+    return validationErrorState(validation.error, values);
   }
 
   if (formData.get("saveAnyway") !== "true") {
@@ -166,6 +176,7 @@ export async function createProperty(
       return {
         message: "This property may already exist.",
         duplicates,
+        values,
       };
     }
   }
@@ -183,6 +194,7 @@ export async function createProperty(
     console.error("Unable to create property", error);
     return {
       message: "The property could not be saved. Please try again.",
+      values,
     };
   }
 
@@ -197,18 +209,19 @@ export async function updateProperty(
 ): Promise<PropertyActionState> {
   await requireServerSession();
 
+  const values = readPropertyFormValues(formData);
   const idValidation = propertyIdSchema.safeParse(id);
 
   if (!idValidation.success) {
-    return { message: "This property ID is invalid." };
+    return { message: "This property ID is invalid.", values };
   }
 
   const validation = createPropertySchema.safeParse(
-    readPropertyForm(formData),
+    parsePropertyForm(values),
   );
 
   if (!validation.success) {
-    return validationErrorState(validation.error);
+    return validationErrorState(validation.error, values);
   }
 
   if (formData.get("saveAnyway") !== "true") {
@@ -221,6 +234,7 @@ export async function updateProperty(
       return {
         message: "This property may already exist.",
         duplicates,
+        values,
       };
     }
   }
@@ -236,12 +250,13 @@ export async function updateProperty(
       .returning({ id: properties.id });
 
     if (!updatedProperty) {
-      return { message: "This property no longer exists." };
+      return { message: "This property no longer exists.", values };
     }
   } catch (error) {
     console.error("Unable to update property", error);
     return {
       message: "The property could not be updated. Please try again.",
+      values,
     };
   }
 
