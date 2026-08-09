@@ -11,6 +11,8 @@ priority with immediate agent, listing, and viewing actions. Quick filters,
 detailed filters, text search, and URL-based sorting keep larger property lists
 manageable. Exact decimal financial calculations provide acquisition-cost
 estimates and price-per-square-metre values without persisting derived data.
+Two to four dashboard properties can be selected for a horizontally scrollable
+side-by-side comparison.
 
 ## Requirements
 

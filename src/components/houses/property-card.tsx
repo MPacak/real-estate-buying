@@ -1,3 +1,5 @@
+"use client";
+
 import {
   CalendarClock,
   ExternalLink,
@@ -17,7 +19,19 @@ import { formatArea, formatDateTime } from "@/lib/formatting/property";
 import type { Property } from "@/lib/properties/types";
 import { cn } from "@/lib/utils";
 
-export function PropertyCard({ property }: { property: Property }) {
+type PropertyCardProps = {
+  property: Property;
+  selectedForComparison?: boolean;
+  comparisonSelectionDisabled?: boolean;
+  onComparisonSelectionChange?: (selected: boolean) => void;
+};
+
+export function PropertyCard({
+  property,
+  selectedForComparison = false,
+  comparisonSelectionDisabled = false,
+  onComparisonSelectionChange,
+}: PropertyCardProps) {
   const phoneHref = property.agentPhone
     ? `tel:${property.agentPhone.replace(/[^\d+]/g, "")}`
     : null;
@@ -31,9 +45,27 @@ export function PropertyCard({ property }: { property: Property }) {
     <Card className="overflow-hidden">
       <div className="space-y-5 p-5">
         <div className="space-y-3">
-          <div className="flex flex-wrap gap-2">
-            <PropertyStatus status={property.status} />
-            <PropertyPriority priority={property.priority} />
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-wrap gap-2">
+              <PropertyStatus status={property.status} />
+              <PropertyPriority priority={property.priority} />
+            </div>
+            {onComparisonSelectionChange ? (
+              <label className="flex min-h-10 shrink-0 cursor-pointer items-center gap-2 rounded-md px-2 text-xs font-medium hover:bg-muted">
+                <input
+                  type="checkbox"
+                  className="size-4 accent-primary"
+                  checked={selectedForComparison}
+                  disabled={
+                    comparisonSelectionDisabled && !selectedForComparison
+                  }
+                  onChange={(event) =>
+                    onComparisonSelectionChange(event.target.checked)
+                  }
+                />
+                Compare
+              </label>
+            ) : null}
           </div>
 
           <div>

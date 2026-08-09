@@ -1,7 +1,7 @@
 import { Home, Plus } from "lucide-react";
 import Link from "next/link";
 
-import { PropertyCard } from "@/components/houses/property-card";
+import { PropertyDashboardGrid } from "@/components/houses/property-dashboard-grid";
 import { PropertyFilters } from "@/components/houses/property-filters";
 import { buttonVariants } from "@/components/ui/button";
 import { getProperties } from "@/lib/properties/queries";
@@ -60,14 +60,7 @@ export default async function HousesPage({ searchParams }: HousesPageProps) {
             {matchingProperties.length}{" "}
             {matchingProperties.length === 1 ? "property" : "properties"}
           </p>
-        <section
-          className="grid gap-4 lg:grid-cols-2"
-            aria-label="Properties"
-        >
-            {matchingProperties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
-        </section>
+          <PropertyDashboardGrid properties={matchingProperties} />
         </div>
       ) : (
         <section className="flex min-h-72 flex-col items-center justify-center rounded-xl border border-dashed bg-card px-6 py-12 text-center">

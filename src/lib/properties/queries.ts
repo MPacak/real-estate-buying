@@ -121,3 +121,21 @@ export async function getProperties(filters: PropertyFilters) {
     .where(and(...conditions))
     .orderBy(...orderBy[filters.sort]);
 }
+
+export async function getPropertiesByIds(ids: string[]) {
+  await requireServerSession();
+
+  if (ids.length === 0) return [];
+
+  const matchingProperties = await db
+    .select()
+    .from(properties)
+    .where(inArray(properties.id, ids));
+  const propertyById = new Map(
+    matchingProperties.map((property) => [property.id, property]),
+  );
+
+  return ids
+    .map((id) => propertyById.get(id))
+    .filter((property) => property !== undefined);
+}
