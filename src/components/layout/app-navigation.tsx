@@ -31,7 +31,8 @@ export function AppNavigation({ mobile = false }: AppNavigationProps) {
       {items.map(({ href, label, icon: Icon }) => {
         const isActive =
           href === "/houses"
-            ? pathname === href
+            ? pathname.startsWith("/houses") &&
+              !pathname.startsWith("/houses/new")
             : pathname.startsWith(href);
 
         return (

@@ -18,10 +18,12 @@ export default function HousesPage() {
         <span className="flex size-14 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
           <Home aria-hidden="true" className="size-7" />
         </span>
-        <h2 className="mt-4 text-lg font-semibold">No houses yet</h2>
+        <h2 className="mt-4 text-lg font-semibold">
+          Property dashboard coming next
+        </h2>
         <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-          The application foundation is ready. Property entry is implemented in
-          the property CRUD phase.
+          Property entry, details, and editing are ready. The complete active
+          property list will be added in the dashboard phase.
         </p>
         <Link
           href="/houses/new"

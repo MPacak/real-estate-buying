@@ -11,19 +11,22 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "create-user": "tsx scripts/create-user.ts"
+    "create-user": "tsx --env-file=.env.local scripts/create-user.ts"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.26",
     "better-auth": "^1.6.26",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "date-fns-tz": "^3.2.0",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.30.0",
     "next": "^16.3.0",
     "postgres": "^3.4.9",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "server-only": "^0.0.1",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3"
   },

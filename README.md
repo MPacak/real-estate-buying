@@ -5,8 +5,8 @@ Private, mobile-first application for tracking houses under consideration.
 The project currently contains the Next.js application foundation,
 Neon/Drizzle database configuration, Better Auth email/password login,
 protected routes, the responsive authenticated shell, and the initial Property
-database model. Property CRUD and dashboard functionality are implemented in
-later phases.
+database model. Authenticated users can create, view, edit, and archive
+properties. The property dashboard is implemented in the next phase.
 
 ## Requirements
 

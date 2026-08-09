@@ -1,8 +1,7 @@
-import { config } from "dotenv";
 import { z } from "zod";
 
-config({ path: ".env.local", override: true });
-config();
+import { closeDatabaseConnection } from "../src/db";
+import { createAuth } from "../src/lib/auth";
 
 function readArgument(name: string) {
   const index = process.argv.indexOf(`--${name}`);
@@ -15,23 +14,21 @@ const inputSchema = z.object({
   password: z.string().min(8, "Password must contain at least 8 characters"),
 });
 
-const input = inputSchema.safeParse({
-  name: readArgument("name"),
-  email: readArgument("email"),
-  password: readArgument("password"),
-});
+async function main() {
+  const input = inputSchema.safeParse({
+    name: readArgument("name"),
+    email: readArgument("email"),
+    password: readArgument("password"),
+  });
 
-if (!input.success) {
-  console.error(z.prettifyError(input.error));
-  console.error(
-    '\nUsage: npm run create-user -- --name "Name" --email "name@example.com" --password "secure-password"',
-  );
-  process.exitCode = 1;
-} else {
-  const [{ createAuth }, { closeDatabaseConnection }] = await Promise.all([
-    import("../src/lib/auth"),
-    import("../src/db"),
-  ]);
+  if (!input.success) {
+    console.error(z.prettifyError(input.error));
+    console.error(
+      '\nUsage: npm run create-user -- --name "Name" --email "name@example.com" --password "secure-password"',
+    );
+    process.exitCode = 1;
+    return;
+  }
 
   try {
     const userCreationAuth = createAuth({ allowSignUp: true });
@@ -50,3 +47,5 @@ if (!input.success) {
     await closeDatabaseConnection();
   }
 }
+
+void main();
