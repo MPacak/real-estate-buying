@@ -10,6 +10,8 @@ import { db } from "@/db";
 import { properties } from "@/db/schema/properties";
 import type { PropertyActionState } from "@/lib/properties/action-state";
 import { requireServerSession } from "@/lib/auth/session";
+import { findDuplicateProperties } from "@/lib/properties/duplicates";
+import { normalizeListingUrl } from "@/lib/properties/normalization";
 import {
   createPropertySchema,
   type CreatePropertyInput,
@@ -84,7 +86,7 @@ function toDatabaseValues(input: CreatePropertyInput) {
     yearBuilt: input.yearBuilt ?? null,
     furnished: input.furnished ?? null,
     newConstruction: input.newConstruction ?? null,
-    listingUrl: input.listingUrl ?? null,
+    listingUrl: normalizeListingUrl(input.listingUrl),
     agencyName: input.agencyName ?? null,
     agentName: input.agentName ?? null,
     agentPhone: input.agentPhone ?? null,
@@ -127,6 +129,17 @@ export async function createProperty(
     return validationErrorState(validation.error);
   }
 
+  if (formData.get("saveAnyway") !== "true") {
+    const duplicates = await findDuplicateProperties(validation.data);
+
+    if (duplicates.length > 0) {
+      return {
+        message: "This property may already exist.",
+        duplicates,
+      };
+    }
+  }
+
   let propertyId: string;
 
   try {
@@ -166,6 +179,20 @@ export async function updateProperty(
 
   if (!validation.success) {
     return validationErrorState(validation.error);
+  }
+
+  if (formData.get("saveAnyway") !== "true") {
+    const duplicates = await findDuplicateProperties(
+      validation.data,
+      idValidation.data,
+    );
+
+    if (duplicates.length > 0) {
+      return {
+        message: "This property may already exist.",
+        duplicates,
+      };
+    }
   }
 
   try {

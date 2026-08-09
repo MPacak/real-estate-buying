@@ -29,6 +29,11 @@ import {
 import type { Property } from "@/lib/properties/types";
 import type { PropertyCostInputs } from "@/lib/calculations/property-costs";
 
+const duplicateDateFormatter = new Intl.DateTimeFormat("hr-HR", {
+  dateStyle: "medium",
+  timeZone: "Europe/Zagreb",
+});
+
 type PropertyFormProps = {
   action: (
     state: PropertyActionState,
@@ -239,12 +244,56 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
         });
       }}
     >
-      {state.message ? (
+      {state.message && !state.duplicates ? (
         <div
           className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
           role="alert"
         >
           {state.message}
+        </div>
+      ) : null}
+
+      {state.duplicates?.length ? (
+        <div
+          className="space-y-3 rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-950"
+          role="alert"
+        >
+          <div>
+            <p className="font-semibold">This may already exist</p>
+            <p className="mt-1 text-sm">
+              Review the possible matches before saving another property.
+            </p>
+          </div>
+          <ul className="space-y-2">
+            {state.duplicates.map((duplicate) => (
+              <li
+                key={duplicate.id}
+                className="rounded-md border border-amber-200 bg-white/70 p-3 text-sm"
+              >
+                <a
+                  className="font-semibold underline"
+                  href={`/houses/${duplicate.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {duplicate.name}
+                </a>
+                <p className="mt-1 text-xs">
+                  Added {duplicateDateFormatter.format(new Date(duplicate.createdAt))}
+                  {" · "}
+                  {duplicate.reasons.join(", ")}
+                </p>
+              </li>
+            ))}
+          </ul>
+          <Button
+            type="submit"
+            name="saveAnyway"
+            value="true"
+            variant="outline"
+          >
+            Save anyway
+          </Button>
         </div>
       ) : null}
 
