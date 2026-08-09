@@ -6,7 +6,8 @@ The project currently contains the Next.js application foundation,
 Neon/Drizzle database configuration, Better Auth email/password login,
 protected routes, the responsive authenticated shell, and the initial Property
 database model. Authenticated users can create, view, edit, and archive
-properties. The property dashboard is implemented in the next phase.
+properties. The mobile-first dashboard displays active properties ordered by
+priority with immediate agent, listing, and viewing actions.
 
 ## Requirements
 
