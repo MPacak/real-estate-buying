@@ -28,6 +28,23 @@ export function formatBoolean(value: boolean | null | undefined) {
   return value ? "Yes" : "No";
 }
 
+export function formatFurnishingStatus(
+  value:
+    | "UNFURNISHED"
+    | "PARTLY_FURNISHED"
+    | "FURNISHED"
+    | null
+    | undefined,
+) {
+  if (!value) return null;
+
+  return {
+    UNFURNISHED: "Unfurnished",
+    PARTLY_FURNISHED: "Partly furnished",
+    FURNISHED: "Furnished",
+  }[value];
+}
+
 export function formatEnum(value: string) {
   return value
     .toLowerCase()

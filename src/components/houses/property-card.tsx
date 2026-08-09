@@ -24,6 +24,7 @@ type PropertyCardProps = {
   selectedForComparison?: boolean;
   comparisonSelectionDisabled?: boolean;
   onComparisonSelectionChange?: (selected: boolean) => void;
+  currentTime?: string;
 };
 
 export function PropertyCard({
@@ -31,6 +32,7 @@ export function PropertyCard({
   selectedForComparison = false,
   comparisonSelectionDisabled = false,
   onComparisonSelectionChange,
+  currentTime,
 }: PropertyCardProps) {
   const phoneHref = property.agentPhone
     ? `tel:${property.agentPhone.replace(/[^\d+]/g, "")}`
@@ -38,7 +40,21 @@ export function PropertyCard({
   const hasContact = Boolean(
     property.agencyName || property.agentName || property.agentPhone,
   );
-  const hasViewing = Boolean(property.viewingAt);
+  const currentTimestamp = currentTime
+    ? new Date(currentTime).getTime()
+    : Number.NEGATIVE_INFINITY;
+  const upcomingViewings = [
+    { label: "Viewing 1", value: property.viewingAt },
+    { label: "Viewing 2", value: property.secondViewingAt },
+  ]
+    .filter(
+      (viewing): viewing is { label: string; value: Date } =>
+        Boolean(
+          viewing.value &&
+            viewing.value.getTime() >= currentTimestamp,
+        ),
+    )
+    .sort((left, right) => left.value.getTime() - right.value.getTime());
   const costs = calculatePropertyCosts(property);
 
   return (
@@ -137,15 +153,19 @@ export function PropertyCard({
           </div>
         ) : null}
 
-        {hasViewing && property.viewingAt ? (
+        {upcomingViewings.length > 0 ? (
           <div className="flex items-start gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
             <CalendarClock
               aria-hidden="true"
               className="mt-0.5 size-4 shrink-0"
             />
-            <div>
-              <p className="font-medium">Viewing</p>
-              <p>{formatDateTime(property.viewingAt)}</p>
+            <div className="space-y-2">
+              {upcomingViewings.map((viewing) => (
+                <div key={viewing.label}>
+                  <p className="font-medium">{viewing.label}</p>
+                  <p>{formatDateTime(viewing.value)}</p>
+                </div>
+              ))}
             </div>
           </div>
         ) : null}

@@ -8,11 +8,11 @@ describe("calculatePropertyCosts", () => {
       askingPrice: "455000",
       targetOfferPrice: "420000",
       livingAreaM2: "245",
-      propertyTaxPercent: "3",
       agencyFeePercent: "2.5",
       solemnizationCost: "2000",
       additionalCosts: "5000",
       furnishingCost: "20000",
+      renovationCost: "10000",
     });
 
     expect(result).toEqual({
@@ -20,7 +20,8 @@ describe("calculatePropertyCosts", () => {
       calculationBaseSource: "targetOfferPrice",
       propertyTax: "12600.00",
       agencyFee: "10500.00",
-      estimatedTotal: "470100.00",
+      solemnizationCost: "2000.00",
+      estimatedTotal: "480100.00",
       askingPricePerM2: "1857.14",
       targetPricePerM2: "1714.29",
     });
@@ -29,12 +30,12 @@ describe("calculatePropertyCosts", () => {
   it("falls back to asking price when no target offer exists", () => {
     const result = calculatePropertyCosts({
       askingPrice: "455000",
-      propertyTaxPercent: "3",
     });
 
     expect(result.calculationBaseSource).toBe("askingPrice");
     expect(result.propertyTax).toBe("13650.00");
-    expect(result.estimatedTotal).toBe("468650.00");
+    expect(result.solemnizationCost).toBe("2000.00");
+    expect(result.estimatedTotal).toBe("470650.00");
   });
 
   it("returns unknown price-based costs when both prices are missing", () => {
@@ -46,18 +47,19 @@ describe("calculatePropertyCosts", () => {
     expect(result.calculationBase).toBeNull();
     expect(result.propertyTax).toBeNull();
     expect(result.agencyFee).toBeNull();
+    expect(result.solemnizationCost).toBe("2000.00");
     expect(result.estimatedTotal).toBeNull();
     expect(result.askingPricePerM2).toBeNull();
   });
 
-  it("treats missing optional costs as zero and rounds to cents", () => {
+  it("does not calculate property tax for new construction", () => {
     const result = calculatePropertyCosts({
       askingPrice: "100",
-      propertyTaxPercent: "0.3333",
+      newConstruction: true,
     });
 
-    expect(result.propertyTax).toBe("0.33");
+    expect(result.propertyTax).toBe("0.00");
     expect(result.agencyFee).toBe("0.00");
-    expect(result.estimatedTotal).toBe("100.33");
+    expect(result.estimatedTotal).toBe("2100.00");
   });
 });

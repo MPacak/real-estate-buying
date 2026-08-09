@@ -41,6 +41,8 @@ const propertyFormFields = [
   "priority",
   "viewingAt",
   "viewingNotes",
+  "secondViewingAt",
+  "secondViewingNotes",
   "pros",
   "cons",
   "notes",
@@ -56,6 +58,7 @@ const propertyFormFields = [
   "solemnizationCost",
   "additionalCosts",
   "furnishingCost",
+  "renovationCost",
 ] as const;
 
 function readPropertyForm(formData: FormData) {
@@ -73,6 +76,18 @@ function readPropertyForm(formData: FormData) {
 
   if (typeof viewingAt === "string" && viewingAt.trim() !== "") {
     input.viewingAt = fromZonedTime(viewingAt, "Europe/Zagreb");
+  }
+
+  const secondViewingAt = input.secondViewingAt;
+
+  if (
+    typeof secondViewingAt === "string" &&
+    secondViewingAt.trim() !== ""
+  ) {
+    input.secondViewingAt = fromZonedTime(
+      secondViewingAt,
+      "Europe/Zagreb",
+    );
   }
 
   return input;
@@ -101,6 +116,8 @@ function toDatabaseValues(input: CreatePropertyInput) {
     priority: input.priority,
     viewingAt: input.viewingAt ?? null,
     viewingNotes: input.viewingNotes ?? null,
+    secondViewingAt: input.secondViewingAt ?? null,
+    secondViewingNotes: input.secondViewingNotes ?? null,
     pros: input.pros ?? null,
     cons: input.cons ?? null,
     notes: input.notes ?? null,
@@ -116,6 +133,7 @@ function toDatabaseValues(input: CreatePropertyInput) {
     solemnizationCost: input.solemnizationCost ?? null,
     additionalCosts: input.additionalCosts ?? null,
     furnishingCost: input.furnishingCost ?? null,
+    renovationCost: input.renovationCost ?? null,
   } satisfies typeof properties.$inferInsert;
 }
 

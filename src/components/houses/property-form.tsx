@@ -194,7 +194,7 @@ function BooleanField({
   label,
   value,
 }: {
-  name: "furnished" | "newConstruction";
+  name: "newConstruction";
   label: string;
   value?: boolean | null;
 }) {
@@ -210,6 +210,28 @@ function BooleanField({
   );
 }
 
+function FurnishingField({
+  value,
+}: {
+  value?: Property["furnished"];
+}) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="furnished">Furnished</Label>
+      <Select
+        id="furnished"
+        name="furnished"
+        defaultValue={value ?? ""}
+      >
+        <option value="">Unknown</option>
+        <option value="UNFURNISHED">Unfurnished</option>
+        <option value="PARTLY_FURNISHED">Partly furnished</option>
+        <option value="FURNISHED">Furnished</option>
+      </Select>
+    </div>
+  );
+}
+
 export function PropertyForm({ action, property }: PropertyFormProps) {
   const [state, formAction] = useActionState(
     action,
@@ -219,14 +241,15 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
     askingPrice: property?.askingPrice,
     targetOfferPrice: property?.targetOfferPrice,
     livingAreaM2: property?.livingAreaM2,
-    propertyTaxPercent: property?.propertyTaxPercent,
+    newConstruction: property?.newConstruction,
     agencyFeePercent: property?.agencyFeePercent,
-    solemnizationCost: property?.solemnizationCost,
+    solemnizationCost: property?.solemnizationCost ?? "2000",
     additionalCosts: property?.additionalCosts,
     furnishingCost: property?.furnishingCost,
+    renovationCost: property?.renovationCost,
   });
   const [selectedStatus, setSelectedStatus] = useState<Property["status"]>(
-    property?.status ?? "NEW",
+    property?.status ?? "INTERESTED",
   );
   const [isDirty, setIsDirty] = useState(false);
   const isEditing = Boolean(property);
@@ -256,11 +279,17 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
           askingPrice: value("askingPrice"),
           targetOfferPrice: value("targetOfferPrice"),
           livingAreaM2: value("livingAreaM2"),
-          propertyTaxPercent: value("propertyTaxPercent"),
+          newConstruction:
+            value("newConstruction") === "true"
+              ? true
+              : value("newConstruction") === "false"
+                ? false
+                : null,
           agencyFeePercent: value("agencyFeePercent"),
           solemnizationCost: value("solemnizationCost"),
           additionalCosts: value("additionalCosts"),
           furnishingCost: value("furnishingCost"),
+          renovationCost: value("renovationCost"),
         });
       }}
     >
@@ -412,11 +441,7 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
           type="number"
         />
         <div className="hidden sm:block" />
-        <BooleanField
-          name="furnished"
-          label="Furnished"
-          value={property?.furnished}
-        />
+        <FurnishingField value={property?.furnished} />
         <BooleanField
           name="newConstruction"
           label="New construction"
@@ -461,7 +486,7 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
           <Select
             id="status"
             name="status"
-            defaultValue={property?.status ?? "NEW"}
+            defaultValue={property?.status ?? "INTERESTED"}
             onChange={(event) => {
               setSelectedStatus(event.target.value as Property["status"]);
             }}
@@ -506,7 +531,7 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
       <FormSection title="Viewing">
         <TextField
           name="viewingAt"
-          label="Viewing date and time"
+          label="Viewing 1 date and time"
           defaultValue={
             property?.viewingAt
               ? formatInTimeZone(
@@ -522,8 +547,30 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
         />
         <MultilineField
           name="viewingNotes"
-          label="Viewing notes"
+          label="Viewing 1 notes"
           defaultValue={property?.viewingNotes}
+          state={state}
+        />
+        <TextField
+          name="secondViewingAt"
+          label="Viewing 2 date and time"
+          defaultValue={
+            property?.secondViewingAt
+              ? formatInTimeZone(
+                  property.secondViewingAt,
+                  "Europe/Zagreb",
+                  "yyyy-MM-dd'T'HH:mm",
+                )
+              : ""
+          }
+          state={state}
+          type="datetime-local"
+          className="space-y-2 sm:col-span-2"
+        />
+        <MultilineField
+          name="secondViewingNotes"
+          label="Viewing 2 notes"
+          defaultValue={property?.secondViewingNotes}
           state={state}
         />
       </FormSection>
@@ -613,15 +660,14 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
 
       <FormSection
         title="Additional costs"
-        description="Percentages are entered as whole percentages. For example, 3 means 3%."
+        description="Property tax is automatic: 0% for new construction, otherwise 3%. Agency fee is entered as a whole percentage."
       >
-        <TextField
-          name="propertyTaxPercent"
-          label="Property tax (%)"
-          defaultValue={property?.propertyTaxPercent}
-          state={state}
-          inputMode="decimal"
-        />
+        <div className="space-y-2">
+          <Label>Property tax</Label>
+          <p className="flex min-h-11 items-center rounded-md border bg-muted/50 px-3 text-sm">
+            Automatic: 0% for new construction, otherwise 3%
+          </p>
+        </div>
         <TextField
           name="agencyFeePercent"
           label="Agency fee, VAT included (%)"
@@ -632,7 +678,7 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
         <TextField
           name="solemnizationCost"
           label="Solemnization (€)"
-          defaultValue={property?.solemnizationCost}
+          defaultValue={property?.solemnizationCost ?? "2000"}
           state={state}
           inputMode="decimal"
         />
@@ -647,6 +693,13 @@ export function PropertyForm({ action, property }: PropertyFormProps) {
           name="furnishingCost"
           label="Furnishing (€)"
           defaultValue={property?.furnishingCost}
+          state={state}
+          inputMode="decimal"
+        />
+        <TextField
+          name="renovationCost"
+          label="Renovation (€)"
+          defaultValue={property?.renovationCost}
           state={state}
           inputMode="decimal"
         />

@@ -62,7 +62,7 @@ export function FinancialSummary({
         </div>
         <CardDescription>
           Calculated from the target offer when available, otherwise the asking
-          price.
+          price. Property tax is 0% for new construction and 3% otherwise.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -86,7 +86,7 @@ export function FinancialSummary({
             />
             <SummaryItem
               label="Solemnization"
-              value={formatCurrency(inputs.solemnizationCost)}
+              value={formatCurrency(costs.solemnizationCost)}
             />
             <SummaryItem
               label="Additional costs"
@@ -95,6 +95,10 @@ export function FinancialSummary({
             <SummaryItem
               label="Furnishing"
               value={formatCurrency(inputs.furnishingCost)}
+            />
+            <SummaryItem
+              label="Renovation"
+              value={formatCurrency(inputs.renovationCost)}
             />
             <SummaryItem
               label="Asking price per m²"

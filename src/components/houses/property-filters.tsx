@@ -13,11 +13,10 @@ import type { PropertyFilters } from "@/lib/validation/property-filters";
 import { cn } from "@/lib/utils";
 
 const quickFilters = [
-  { label: "All active", href: "/houses" },
-  { label: "High priority", href: "/houses?quick=HIGH_PRIORITY" },
+  { label: "All", href: "/houses" },
   { label: "Interested", href: "/houses?quick=INTERESTED" },
-  { label: "To view", href: "/houses?quick=TO_VIEW" },
-  { label: "Viewed", href: "/houses?quick=VIEWED" },
+  { label: "Considering", href: "/houses?quick=CONSIDERING" },
+  { label: "High priority", href: "/houses?quick=HIGH_PRIORITY" },
   { label: "Rejected", href: "/houses?quick=REJECTED" },
 ] as const;
 
@@ -36,7 +35,6 @@ export function PropertyFilters({ filters }: { filters: PropertyFilters }) {
       filters.maxPrice ||
       filters.minArea ||
       filters.location ||
-      filters.agency ||
       filters.viewing ||
       filters.furnished ||
       filters.newConstruction,
@@ -118,7 +116,7 @@ export function PropertyFilters({ filters }: { filters: PropertyFilters }) {
                 name="status"
                 defaultValue={filters.status ?? ""}
               >
-                <option value="">All active</option>
+                <option value="">Interested & considering</option>
                 {PROPERTY_STATUSES.map((status) => (
                   <option key={status} value={status}>
                     {readableEnum(status)}
@@ -179,14 +177,6 @@ export function PropertyFilters({ filters }: { filters: PropertyFilters }) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="filter-agency">Agency</Label>
-              <Input
-                id="filter-agency"
-                name="agency"
-                defaultValue={filters.agency}
-              />
-            </div>
-            <div className="space-y-2">
               <Label htmlFor="filter-viewing">Viewing</Label>
               <Select
                 id="filter-viewing"
@@ -205,8 +195,9 @@ export function PropertyFilters({ filters }: { filters: PropertyFilters }) {
                 defaultValue={filters.furnished ?? ""}
               >
                 <option value="">Any</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
+                <option value="UNFURNISHED">Unfurnished</option>
+                <option value="PARTLY_FURNISHED">Partly furnished</option>
+                <option value="FURNISHED">Furnished</option>
               </Select>
             </div>
             <div className="space-y-2">

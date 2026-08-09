@@ -11,6 +11,7 @@ import { formatCurrency } from "@/lib/formatting/currency";
 import {
   formatArea,
   formatBoolean,
+  formatFurnishingStatus,
 } from "@/lib/formatting/property";
 import { getPropertiesByIds } from "@/lib/properties/queries";
 
@@ -208,7 +209,7 @@ export default async function ComparePage({
             <ComparisonRow
               label="Furnished"
               values={properties.map((property) =>
-                formatBoolean(property.furnished),
+                formatFurnishingStatus(property.furnished),
               )}
             />
             <ComparisonRow
@@ -220,14 +221,6 @@ export default async function ComparePage({
             <ComparisonRow
               label="Location"
               values={properties.map((property) => property.location)}
-            />
-            <ComparisonRow
-              label="Agency"
-              values={properties.map((property) => property.agencyName)}
-            />
-            <ComparisonRow
-              label="Agent"
-              values={properties.map((property) => property.agentName)}
             />
             <ComparisonRow
               label="Location rating"

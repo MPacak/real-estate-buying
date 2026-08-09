@@ -33,10 +33,8 @@ export async function getProperties(filters: PropertyFilters) {
     );
   } else if (filters.quick === "INTERESTED") {
     conditions.push(eq(properties.status, "INTERESTED"));
-  } else if (filters.quick === "TO_VIEW") {
-    conditions.push(eq(properties.status, "VIEWING_PLANNED"));
-  } else if (filters.quick === "VIEWED") {
-    conditions.push(eq(properties.status, "VIEWED"));
+  } else if (filters.quick === "CONSIDERING") {
+    conditions.push(eq(properties.status, "CONSIDERING"));
   } else if (filters.quick === "REJECTED") {
     conditions.push(eq(properties.status, "REJECTED"));
   } else if (filters.status) {
@@ -65,16 +63,17 @@ export async function getProperties(filters: PropertyFilters) {
     conditions.push(ilike(properties.location, `%${filters.location}%`));
   }
 
-  if (filters.agency) {
-    conditions.push(ilike(properties.agencyName, `%${filters.agency}%`));
-  }
-
   if (filters.viewing === "true") {
-    conditions.push(isNotNull(properties.viewingAt));
+    conditions.push(
+      or(
+        isNotNull(properties.viewingAt),
+        isNotNull(properties.secondViewingAt),
+      )!,
+    );
   }
 
   if (filters.furnished) {
-    conditions.push(eq(properties.furnished, filters.furnished === "true"));
+    conditions.push(eq(properties.furnished, filters.furnished));
   }
 
   if (filters.newConstruction) {
@@ -110,7 +109,10 @@ export async function getProperties(filters: PropertyFilters) {
       desc(properties.updatedAt),
     ],
     viewing: [
-      sql`${properties.viewingAt} ASC NULLS LAST`,
+      sql`LEAST(
+        COALESCE(${properties.viewingAt}, 'infinity'::timestamptz),
+        COALESCE(${properties.secondViewingAt}, 'infinity'::timestamptz)
+      ) ASC`,
       desc(properties.priority),
     ],
   } satisfies Record<PropertyFilters["sort"], SQL[]>;
@@ -138,4 +140,36 @@ export async function getPropertiesByIds(ids: string[]) {
   return ids
     .map((id) => propertyById.get(id))
     .filter((property) => property !== undefined);
+}
+
+export async function getUpcomingViewingProperties(currentTime: Date) {
+  await requireServerSession();
+
+  return db
+    .select()
+    .from(properties)
+    .where(
+      and(
+        inArray(properties.status, ACTIVE_PROPERTY_STATUSES),
+        or(
+          gte(properties.viewingAt, currentTime),
+          gte(properties.secondViewingAt, currentTime),
+        ),
+      ),
+    )
+    .orderBy(
+      sql`LEAST(
+        CASE
+          WHEN ${properties.viewingAt} >= now()
+          THEN ${properties.viewingAt}
+          ELSE 'infinity'::timestamptz
+        END,
+        CASE
+          WHEN ${properties.secondViewingAt} >= now()
+          THEN ${properties.secondViewingAt}
+          ELSE 'infinity'::timestamptz
+        END
+      ) ASC`,
+      desc(properties.priority),
+    );
 }

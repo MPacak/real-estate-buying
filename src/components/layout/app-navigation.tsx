@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Plus, Scale } from "lucide-react";
+import { CalendarClock, Home, Plus, Scale } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/houses", label: "Houses", icon: Home },
+  { href: "/viewings", label: "Viewings", icon: CalendarClock },
   { href: "/compare", label: "Compare", icon: Scale },
   { href: "/houses/new", label: "Add house", icon: Plus },
 ];
@@ -24,7 +25,7 @@ export function AppNavigation({ mobile = false }: AppNavigationProps) {
       aria-label="Main navigation"
       className={cn(
         mobile
-          ? "grid grid-cols-3"
+          ? "grid grid-cols-4"
           : "flex items-center gap-1",
       )}
     >

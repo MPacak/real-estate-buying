@@ -11,8 +11,10 @@ import { cn } from "@/lib/utils";
 
 export function PropertyDashboardGrid({
   properties,
+  currentTime,
 }: {
   properties: Property[];
+  currentTime: string;
 }) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -40,6 +42,7 @@ export function PropertyDashboardGrid({
             onComparisonSelectionChange={(selected) =>
               setSelected(property.id, selected)
             }
+            currentTime={currentTime}
           />
         ))}
       </section>

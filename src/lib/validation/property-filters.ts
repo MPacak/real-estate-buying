@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  FURNISHING_STATUSES,
   PROPERTY_PRIORITIES,
   PROPERTY_STATUSES,
 } from "@/lib/properties/constants";
@@ -17,7 +18,7 @@ const propertyFiltersSchema = z
   .object({
     q: z.string().trim().max(200).optional().catch(undefined),
     quick: z
-      .enum(["HIGH_PRIORITY", "INTERESTED", "TO_VIEW", "VIEWED", "REJECTED"])
+      .enum(["HIGH_PRIORITY", "INTERESTED", "CONSIDERING", "REJECTED"])
       .optional()
       .catch(undefined),
     status: z.enum(PROPERTY_STATUSES).optional().catch(undefined),
@@ -26,9 +27,8 @@ const propertyFiltersSchema = z
     maxPrice: optionalDecimal,
     minArea: optionalDecimal,
     location: z.string().trim().max(200).optional().catch(undefined),
-    agency: z.string().trim().max(200).optional().catch(undefined),
     viewing: z.enum(["true"]).optional().catch(undefined),
-    furnished: z.enum(["true", "false"]).optional().catch(undefined),
+    furnished: z.enum(FURNISHING_STATUSES).optional().catch(undefined),
     newConstruction: z.enum(["true", "false"]).optional().catch(undefined),
     sort: z
       .enum([
@@ -46,7 +46,6 @@ const propertyFiltersSchema = z
     ...filters,
     q: filters.q || undefined,
     location: filters.location || undefined,
-    agency: filters.agency || undefined,
   }));
 
 export type PropertyFilters = z.infer<typeof propertyFiltersSchema>;

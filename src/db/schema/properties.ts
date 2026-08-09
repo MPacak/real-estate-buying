@@ -13,6 +13,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import {
+  FURNISHING_STATUSES,
   PROPERTY_PRIORITIES,
   PROPERTY_STATUSES,
 } from "@/lib/properties/constants";
@@ -25,6 +26,11 @@ export const propertyStatusEnum = pgEnum(
 export const propertyPriorityEnum = pgEnum(
   "property_priority",
   PROPERTY_PRIORITIES,
+);
+
+export const furnishingStatusEnum = pgEnum(
+  "furnishing_status",
+  FURNISHING_STATUSES,
 );
 
 export const properties = pgTable(
@@ -56,7 +62,7 @@ export const properties = pgTable(
     bedrooms: integer("bedrooms"),
     bathrooms: integer("bathrooms"),
     yearBuilt: integer("year_built"),
-    furnished: boolean("furnished"),
+    furnished: furnishingStatusEnum("furnished"),
     newConstruction: boolean("new_construction"),
 
     listingUrl: text("listing_url"),
@@ -66,7 +72,7 @@ export const properties = pgTable(
     agentPhone: text("agent_phone"),
     agentEmail: text("agent_email"),
 
-    status: propertyStatusEnum("status").default("NEW").notNull(),
+    status: propertyStatusEnum("status").default("INTERESTED").notNull(),
     priority: propertyPriorityEnum("priority").default("NORMAL").notNull(),
 
     viewingAt: timestamp("viewing_at", {
@@ -74,6 +80,11 @@ export const properties = pgTable(
       withTimezone: true,
     }),
     viewingNotes: text("viewing_notes"),
+    secondViewingAt: timestamp("second_viewing_at", {
+      mode: "date",
+      withTimezone: true,
+    }),
+    secondViewingNotes: text("second_viewing_notes"),
 
     pros: text("pros"),
     cons: text("cons"),
@@ -107,6 +118,10 @@ export const properties = pgTable(
       precision: 14,
       scale: 2,
     }),
+    renovationCost: numeric("renovation_cost", {
+      precision: 14,
+      scale: 2,
+    }),
 
     createdAt: timestamp("created_at", {
       mode: "date",
@@ -127,6 +142,7 @@ export const properties = pgTable(
     index("properties_priority_idx").on(table.priority),
     index("properties_updated_at_idx").on(table.updatedAt),
     index("properties_viewing_at_idx").on(table.viewingAt),
+    index("properties_second_viewing_at_idx").on(table.secondViewingAt),
     check(
       "properties_asking_price_nonnegative",
       sql`${table.askingPrice} >= 0`,
@@ -168,6 +184,10 @@ export const properties = pgTable(
     check(
       "properties_furnishing_cost_nonnegative",
       sql`${table.furnishingCost} >= 0`,
+    ),
+    check(
+      "properties_renovation_cost_nonnegative",
+      sql`${table.renovationCost} >= 0`,
     ),
     check(
       "properties_location_rating_range",

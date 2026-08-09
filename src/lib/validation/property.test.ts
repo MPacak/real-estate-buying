@@ -6,7 +6,7 @@ describe("createPropertySchema", () => {
   it("allows an incomplete property with only a name", () => {
     const result = createPropertySchema.parse({ name: "Test house" });
 
-    expect(result.status).toBe("NEW");
+    expect(result.status).toBe("INTERESTED");
     expect(result.priority).toBe("NORMAL");
   });
 

@@ -11,6 +11,9 @@ priority with immediate agent, listing, and viewing actions. Quick filters,
 detailed filters, text search, and URL-based sorting keep larger property lists
 manageable. Exact decimal financial calculations provide acquisition-cost
 estimates and price-per-square-metre values without persisting derived data.
+Property tax is automatically 0% for new construction and 3% otherwise;
+solemnization defaults to €2,000, and renovation costs are included in totals.
+The dedicated Viewings tab orders first and second upcoming viewing dates.
 Two to four dashboard properties can be selected for a horizontally scrollable
 side-by-side comparison. Optional 1–10 ratings keep location, layout, condition,
 garden, privacy, and value assessments separate and transparent. The MVP

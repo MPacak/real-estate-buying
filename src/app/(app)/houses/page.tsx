@@ -32,7 +32,6 @@ export default async function HousesPage({ searchParams }: HousesPageProps) {
       filters.maxPrice ||
       filters.minArea ||
       filters.location ||
-      filters.agency ||
       filters.viewing ||
       filters.furnished ||
       filters.newConstruction,
@@ -69,7 +68,10 @@ export default async function HousesPage({ searchParams }: HousesPageProps) {
             {matchingProperties.length}{" "}
             {matchingProperties.length === 1 ? "property" : "properties"}
           </p>
-          <PropertyDashboardGrid properties={matchingProperties} />
+          <PropertyDashboardGrid
+            properties={matchingProperties}
+            currentTime={new Date().toISOString()}
+          />
         </div>
       ) : (
         <section className="flex min-h-72 flex-col items-center justify-center rounded-xl border border-dashed bg-card px-6 py-12 text-center">

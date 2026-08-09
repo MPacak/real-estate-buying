@@ -33,6 +33,7 @@ import {
   formatArea,
   formatBoolean,
   formatDateTime,
+  formatFurnishingStatus,
 } from "@/lib/formatting/property";
 import { cn } from "@/lib/utils";
 
@@ -132,7 +133,8 @@ export default async function PropertyDetailsPage({
       property.agencyFeePercent ||
       property.solemnizationCost ||
       property.additionalCosts ||
-      property.furnishingCost,
+      property.furnishingCost ||
+      property.renovationCost,
   );
   const hasRatings = Boolean(
     property.locationRating ||
@@ -268,7 +270,7 @@ export default async function PropertyDetailsPage({
           <DetailItem label="Year built" value={property.yearBuilt} />
           <DetailItem
             label="Furnished"
-            value={formatBoolean(property.furnished)}
+            value={formatFurnishingStatus(property.furnished)}
           />
           <DetailItem
             label="New construction"
@@ -312,15 +314,27 @@ export default async function PropertyDetailsPage({
         </DetailsCard>
       ) : null}
 
-      {property.viewingAt || property.viewingNotes ? (
+      {property.viewingAt ||
+      property.viewingNotes ||
+      property.secondViewingAt ||
+      property.secondViewingNotes ? (
         <DetailsCard title="Viewing">
           <DetailItem
-            label="Date and time"
+            label="Viewing 1 date and time"
             value={formatDateTime(property.viewingAt)}
           />
           <DetailItem
-            label="Viewing notes"
+            label="Viewing 1 notes"
             value={property.viewingNotes}
+            wide
+          />
+          <DetailItem
+            label="Viewing 2 date and time"
+            value={formatDateTime(property.secondViewingAt)}
+          />
+          <DetailItem
+            label="Viewing 2 notes"
+            value={property.secondViewingNotes}
             wide
           />
         </DetailsCard>

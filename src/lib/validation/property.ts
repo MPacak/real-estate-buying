@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  FURNISHING_STATUSES,
   PROPERTY_PRIORITIES,
   PROPERTY_STATUSES,
 } from "@/lib/properties/constants";
@@ -147,7 +148,7 @@ export const createPropertySchema = z
       minimum: 1000,
       maximum: new Date().getFullYear() + 1,
     }),
-    furnished: optionalBoolean,
+    furnished: z.enum(FURNISHING_STATUSES).optional(),
     newConstruction: optionalBoolean,
 
     listingUrl: optionalListingUrl,
@@ -157,11 +158,13 @@ export const createPropertySchema = z
     agentPhone: optionalText(50),
     agentEmail: optionalEmail,
 
-    status: z.enum(PROPERTY_STATUSES).default("NEW"),
+    status: z.enum(PROPERTY_STATUSES).default("INTERESTED"),
     priority: z.enum(PROPERTY_PRIORITIES).default("NORMAL"),
 
     viewingAt: optionalDate,
     viewingNotes: optionalText(10_000),
+    secondViewingAt: optionalDate,
+    secondViewingNotes: optionalText(10_000),
 
     pros: optionalText(10_000),
     cons: optionalText(10_000),
@@ -192,6 +195,10 @@ export const createPropertySchema = z
       scale: 2,
     }),
     furnishingCost: optionalDecimal({
+      integerDigits: 12,
+      scale: 2,
+    }),
+    renovationCost: optionalDecimal({
       integerDigits: 12,
       scale: 2,
     }),
